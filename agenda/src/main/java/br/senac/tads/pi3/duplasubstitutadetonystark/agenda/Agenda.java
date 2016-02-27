@@ -16,6 +16,7 @@ public class Agenda {
      */
     public static void main(String[] args) {
         System.out.println("teste");
+        System.out.println("ekiqueme ei maumau ");
     }
     
 }
