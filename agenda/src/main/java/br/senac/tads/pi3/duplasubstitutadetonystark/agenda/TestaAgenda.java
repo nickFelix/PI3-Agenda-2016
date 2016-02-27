@@ -7,9 +7,16 @@ package br.senac.tads.pi3.duplasubstitutadetonystark.agenda;
 
 /**
  *
- * @author giovane.gpecora1
+ * @author nicolas.falmeida1
  */
-public class Agenda {
-    
+public class TestaAgenda {
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        System.out.println("teste");
+        System.out.println("ekiqueme ei maumau ");
+    }
     
 }
