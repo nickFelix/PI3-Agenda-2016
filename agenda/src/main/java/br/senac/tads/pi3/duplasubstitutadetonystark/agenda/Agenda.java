@@ -18,15 +18,16 @@ import java.text.SimpleDateFormat;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Giovane Pecora e Nicolas
  */
 public class Agenda {
-
+    public static Connection conn = null;
     private static Connection obterConexao() throws SQLException, ClassNotFoundException {
-        Connection conn = null;
+        
         // Passo 1: Registrar driver JDBC.
         Class.forName("org.apache.derby.jdbc.ClientDriver");
 
@@ -114,8 +115,73 @@ public class Agenda {
         
     }
 
-    public static void alterarPessoa() {
+    public static void alterarNome(int id, String nome) throws SQLException {
+        try {
+            String sql = "UPDATE TB_CONTATO "
+                    + "SET DESCRICAO = ?"
+                    + "WHERE ID_CODIGO = ?";
+            PreparedStatement stmt;
 
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, nome);
+            stmt.setDouble(2, id);
+            stmt.execute();
+            stmt.close();
+        } catch (SQLException sqlE) {
+            JOptionPane.showMessageDialog(null, " [Erro ao processar alterar " + sqlE.getMessage() + "]");
+        }
+    }
+
+    public static void alterarData(int id, String data) throws ClassNotFoundException {
+        try {
+            String sql = "UPDATE TB_CONTATO "
+                    + "SET DT_NASCIMENTO = ?"
+                    + "WHERE ID_CODIGO = ?";
+            PreparedStatement stmt;
+
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, data);
+            stmt.setDouble(2, id);
+            stmt.execute();
+            stmt.close();
+        } catch (SQLException sqlE) {
+            JOptionPane.showMessageDialog(null, " [Erro ao processar alterar " + sqlE.getMessage() + "]");
+        }
+    }
+
+    public static void alterarTelefone(int id, String tel) throws ClassNotFoundException {
+        try {
+            String sql = "UPDATE TB_CONTATO "
+                    + "SET VL_TELEFONE = ?"
+                    + "WHERE ID_CODIGO = ?";
+            PreparedStatement stmt;
+
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, tel);
+            stmt.setDouble(2, id);
+            stmt.execute();
+            stmt.close();
+        } catch (SQLException sqlE) {
+            JOptionPane.showMessageDialog(null, " [Erro ao processar alterar " + sqlE.getMessage() + "]");
+        }
+    }
+
+    public static void alterarEmail(int id, String email) throws ClassNotFoundException {
+        try {
+            Connection conn = Agenda.obterConexao();
+            String sql = "UPDATE TB_CONTATO "
+                    + "SET VL_EMAIL = ?"
+                    + "WHERE ID_CODIGO = ?";
+            PreparedStatement stmt;
+
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, email);
+            stmt.setDouble(2, id);
+            stmt.execute();
+            stmt.close();
+        } catch (SQLException sqlE) {
+            JOptionPane.showMessageDialog(null, " [Erro ao processar alterar " + sqlE.getMessage() + "]");
+        }
     }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException, ParseException {
@@ -154,12 +220,64 @@ public class Agenda {
                 case 2:
                     listarPessoas();
                     break;
+                case 3:
+                    int alterar, id;
+                    System.out.println("Digite o ID de quem será alterado: ");
+                    id = input.nextInt();
+                    System.out.println("O que deseja alterar?");
+                    System.out.println("1-) Nome");
+                    System.out.println("2-) Data Nascimento");
+                    System.out.println("3-) Telefone");
+                    System.out.println("4-) Email");
+                    alterar = input.nextInt();
+                    switch (alterar) {
+                        case 1:
+                            System.out.println("Digite o novo nome: ");
+                            String novoNome = input.nextLine();
+                             {
+                                try {
+                                    alterarNome(id, novoNome);
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        case 2:
+                            System.out.println("Digite a nova data: ");
+                            String novaData = input.nextLine();
+                             {
+                                try {
+                                    alterarData(id, novaData);
+                                } catch (ClassNotFoundException ex) {
+                                    Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        case 3:
+                            System.out.println("Digite o novo telefone: ");
+                            String novoTel = input.nextLine();
+                             {
+                                try {
+                                    alterarTelefone(id, novoTel);
+                                } catch (ClassNotFoundException ex) {
+                                    Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                           case 4:
+                            System.out.println("Digite o novo Email: ");
+                            String novoEmail = input.nextLine();
+                             {
+                                try {
+                                    alterarEmail(id, novoEmail);
+                                } catch (ClassNotFoundException ex) {
+                                    Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                    }
 
                 case 4:
                     System.out.println("Informe o ID cadastro deseja excluir");
                     listarPessoas();
-                    int id = input.nextInt();
-                    removerPessoa(id);
+                    int id2 = input.nextInt();
+                    removerPessoa(id2);
 
                     break;
             }
