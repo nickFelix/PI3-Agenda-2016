@@ -80,11 +80,15 @@ public class Agenda {
         }
     }
 
-    public static void cadastrarPessoa() throws SQLException, ClassNotFoundException {
+    //Recebe nome, data, telefone e email como parametros
+    public static void cadastrarPessoa(String nome, String data, String telefone, String email
+    ) throws SQLException, ClassNotFoundException {
         PreparedStatement stmt = null;
         Connection conn = null;
 
-        String sql = "";
+        String sql = "INSERT INTO TB_CONTATO (NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL, DT_CADASTRO)\n"
+                + "VALUES (?,?,?,?,CURRENT_TIMESTAM);";
+        
     }
 
     public static void removerPessoa() {
@@ -110,7 +114,14 @@ public class Agenda {
 
             switch (entrada) {
                 case 1:
-
+                    System.out.println("Informe o nome do contato");
+                    String nome = input.next();
+                    System.out.println("Informe a data de nascimento no formato (dd/mm/aaaa)");
+                    String data = input.next();
+                    System.out.println("Informe o telefone com DDD");
+                    String telefone = input.nextLine();
+                    System.out.println("Informe o email do contato");
+                    String email = input.next();
                 case 2:
                     listarPessoas();
             }
