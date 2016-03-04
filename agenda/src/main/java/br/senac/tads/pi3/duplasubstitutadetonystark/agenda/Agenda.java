@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -81,25 +82,43 @@ public class Agenda {
     }
 
     //Recebe nome, data, telefone e email como parametros
-    public static void cadastrarPessoa(String nome, String data, String telefone, String email
+    public static void cadastrarPessoa(String nome, Date data, String telefone, String email
     ) throws SQLException, ClassNotFoundException {
-        PreparedStatement stmt = null;
-        Connection conn = null;
+        DateFormat formatadorData = new SimpleDateFormat("yyyy/MM/dd");
+        formatadorData.format(data);
+        System.out.println(data);
 
-        String sql = "INSERT INTO TB_CONTATO (NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL, DT_CADASTRO)\n"
-                + "VALUES (?,?,?,?,CURRENT_TIMESTAM);";
-        
+        PreparedStatement stmt = null;
+        Connection conn = obterConexao();
+
+        String sql = "INSERT INTO TB_CONTATO (NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL, DT_CADASTRO)VALUES (?,?,?,?,CURRENT_TIMESTAMP)";
+        stmt = conn.prepareStatement(sql);
+
+        stmt.setString(1, nome);
+        stmt.setDate(2, data);
+        stmt.setString(3, telefone);
+        stmt.setString(4, email);
+        stmt.execute();
+        stmt.close();
+        System.out.println("Sucesso!");
     }
 
-    public static void removerPessoa() {
-
+    public static void removerPessoa(int id) throws SQLException, ClassNotFoundException {
+        Connection conn = obterConexao();
+        String sql = "DELETE FROM TB_CONTATO WHERE ID_CONTATO = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.execute();
+        }
+            System.out.println("sucesso!");
+        
     }
 
     public static void alterarPessoa() {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, ParseException {
 
         Scanner input = new Scanner(System.in);
         int entrada;
@@ -115,15 +134,34 @@ public class Agenda {
             switch (entrada) {
                 case 1:
                     System.out.println("Informe o nome do contato");
-                    String nome = input.next();
-                    System.out.println("Informe a data de nascimento no formato (dd/mm/aaaa)");
-                    String data = input.next();
-                    System.out.println("Informe o telefone com DDD");
+                    String nome = input.nextLine();
+                    nome = input.nextLine();
+
+                    System.out.println("Informe a data de nascimento no formato (dd/mm/AAAA)");
+                    String data = input.nextLine();
+
+                    System.out.println("Informe o telefone");
                     String telefone = input.nextLine();
+
                     System.out.println("Informe o email do contato");
-                    String email = input.next();
+                    String email = input.nextLine();
+                    
+                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                    Date date = new Date(format.parse(data).getTime());
+                    cadastrarPessoa(nome, date, telefone, email);
+                    
+                    break;
                 case 2:
                     listarPessoas();
+                    break;
+
+                case 4:
+                    System.out.println("Informe o ID cadastro deseja excluir");
+                    listarPessoas();
+                    int id = input.nextInt();
+                    removerPessoa(id);
+
+                    break;
             }
 
         } while (entrada != 0);
