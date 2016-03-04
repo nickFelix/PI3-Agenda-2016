@@ -25,12 +25,14 @@ import javax.swing.JOptionPane;
  * @author Giovane Pecora e Nicolas
  */
 public class Agenda {
-    public static Connection conn = null;
+
     private static Connection obterConexao() throws SQLException, ClassNotFoundException {
-        
+        //variavel 'conn' ta local agr, e nao mais global.
+        Connection conn = null;
         // Passo 1: Registrar driver JDBC.
         Class.forName("org.apache.derby.jdbc.ClientDriver");
 
+        //slá que isso ai \/'-'
         // Passo 2: Abrir a conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
         conn = DriverManager.getConnection(
                 "jdbc:derby://localhost:1527/sample",
@@ -111,16 +113,18 @@ public class Agenda {
             stmt.setInt(1, id);
             stmt.execute();
         }
-            System.out.println("sucesso!");
-        
+        System.out.println("sucesso!");
+
     }
 
-    public static void alterarNome(int id, String nome) throws SQLException {
+    public static void alterarNome(int id, String nome) throws SQLException, ClassNotFoundException {
+        //antes tava ID_PESSOA, agr mudei pra certo. mudei nos outros alterar tbm.
+
         try {
-            String sql = "UPDATE TB_CONTATO "
-                    + "SET DESCRICAO = ?"
-                    + "WHERE ID_CODIGO = ?";
-            PreparedStatement stmt;
+            PreparedStatement stmt = null;
+            Connection conn = obterConexao();
+
+            String sql = "UPDATE TB_CONTATO SET DESCRICAO = ? WHERE ID_CONTATO = ?";
 
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, nome);
@@ -132,16 +136,18 @@ public class Agenda {
         }
     }
 
-    public static void alterarData(int id, String data) throws ClassNotFoundException {
+    public static void alterarData(int id, String data) throws ClassNotFoundException, ParseException, SQLException {
+        Connection conn = obterConexao();
+        Date date = formataData(data);
         try {
             String sql = "UPDATE TB_CONTATO "
                     + "SET DT_NASCIMENTO = ?"
-                    + "WHERE ID_CODIGO = ?";
+                    + "WHERE ID_CONTATO= ?";
             PreparedStatement stmt;
 
             stmt = conn.prepareStatement(sql);
-            stmt.setString(1, data);
-            stmt.setDouble(2, id);
+            stmt.setDate(1, date);
+            stmt.setInt(2, id);
             stmt.execute();
             stmt.close();
         } catch (SQLException sqlE) {
@@ -151,16 +157,18 @@ public class Agenda {
 
     public static void alterarTelefone(int id, String tel) throws ClassNotFoundException {
         try {
+            Connection conn = obterConexao();
             String sql = "UPDATE TB_CONTATO "
                     + "SET VL_TELEFONE = ?"
-                    + "WHERE ID_CODIGO = ?";
+                    + "WHERE ID_CONTATO = ?";
             PreparedStatement stmt;
 
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, tel);
-            stmt.setDouble(2, id);
+            stmt.setInt(2, id);
             stmt.execute();
             stmt.close();
+            System.out.println("DEU CERTO!");
         } catch (SQLException sqlE) {
             JOptionPane.showMessageDialog(null, " [Erro ao processar alterar " + sqlE.getMessage() + "]");
         }
@@ -171,12 +179,12 @@ public class Agenda {
             Connection conn = Agenda.obterConexao();
             String sql = "UPDATE TB_CONTATO "
                     + "SET VL_EMAIL = ?"
-                    + "WHERE ID_CODIGO = ?";
+                    + "WHERE ID_CONTATO= ?";
             PreparedStatement stmt;
 
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, email);
-            stmt.setDouble(2, id);
+            stmt.setInt(2, id);
             stmt.execute();
             stmt.close();
         } catch (SQLException sqlE) {
@@ -211,17 +219,17 @@ public class Agenda {
 
                     System.out.println("Informe o email do contato");
                     String email = input.nextLine();
-                    
-                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-                    Date date = new Date(format.parse(data).getTime());
+
+                    Date date = formataData(data);
                     cadastrarPessoa(nome, date, telefone, email);
-                    
+
                     break;
                 case 2:
                     listarPessoas();
                     break;
                 case 3:
-                    int alterar, id;
+                    int alterar,
+                     id;
                     System.out.println("Digite o ID de quem será alterado: ");
                     id = input.nextInt();
                     System.out.println("O que deseja alterar?");
@@ -241,6 +249,7 @@ public class Agenda {
                                     Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
+                            break;
                         case 2:
                             System.out.println("Digite a nova data: ");
                             String novaData = input.nextLine();
@@ -251,6 +260,7 @@ public class Agenda {
                                     Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
+                            break;
                         case 3:
                             System.out.println("Digite o novo telefone: ");
                             String novoTel = input.nextLine();
@@ -261,7 +271,8 @@ public class Agenda {
                                     Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
-                           case 4:
+                            break;
+                        case 4:
                             System.out.println("Digite o novo Email: ");
                             String novoEmail = input.nextLine();
                              {
@@ -271,8 +282,9 @@ public class Agenda {
                                     Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                             }
+                            break;
                     }
-
+                    break;
                 case 4:
                     System.out.println("Informe o ID cadastro deseja excluir");
                     listarPessoas();
@@ -286,4 +298,11 @@ public class Agenda {
 
     }
 
+    //Função que transforma String (dd/mm/aaaa) em Date SQL
+    public static Date formataData(String data) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date(format.parse(data).getTime());
+
+        return date;
+    }
 }
