@@ -8,11 +8,13 @@ package br.senac.tads.pi3.duplasubstitutadetonystark.agenda;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,12 +24,12 @@ import java.util.logging.Logger;
  */
 public class Agenda {
 
-    private Connection obterConexao() throws SQLException, ClassNotFoundException {
+    private static Connection obterConexao() throws SQLException, ClassNotFoundException {
         Connection conn = null;
         // Passo 1: Registrar driver JDBC.
         Class.forName("org.apache.derby.jdbc.ClientDataSource");
 
-        // Passo 2: Abrir a conexÃ£o
+        // Passo 2: Abrir a conexÃƒÆ’Ã‚Â£o
         conn = DriverManager.getConnection(
                 "jdbc:derby://localhost:1527/agendabd;SecurityMechanism=3",
                 "app", // usuario
@@ -35,7 +37,7 @@ public class Agenda {
         return conn;
     }
 
-    public void listarPessoas() {
+    public static void listarPessoas() {
         Statement stmt = null;
         Connection conn = null;
 
@@ -77,6 +79,39 @@ public class Agenda {
             }
         }
     }
-
+    
+    public static void cadastrarPessoa() throws SQLException, ClassNotFoundException{
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        
+        String sql = "";
 }
 
+    public static void main(String[] args) {
+
+        Scanner input = new Scanner(System.in);
+        int entrada;
+        do {
+            System.out.println("O que deseja fazer?");
+            System.out.println("1-) Cadastrar");
+            System.out.println("2-) Consultar");
+            System.out.println("3-) Alterar");
+            System.out.println("4-) Excluir");
+            System.out.println("0-) Sair");
+            entrada = input.nextInt();
+            
+            switch (entrada) {
+            case 1:
+
+            case 2:
+                listarPessoas();
+        }
+            
+        } while (entrada != 0);
+        
+
+        
+
+    }
+
+}
