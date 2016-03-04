@@ -27,12 +27,12 @@ public class Agenda {
     private static Connection obterConexao() throws SQLException, ClassNotFoundException {
         Connection conn = null;
         // Passo 1: Registrar driver JDBC.
-        Class.forName("org.apache.derby.jdbc.ClientDataSource");
+        Class.forName("org.apache.derby.jdbc.ClientDriver");
 
-        // Passo 2: Abrir a conexÃƒÆ’Ã‚Â£o
+        // Passo 2: Abrir a conexÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o
         conn = DriverManager.getConnection(
-                "jdbc:derby://localhost:1527/agendabd;SecurityMechanism=3",
-                "app", // usuario
+                "jdbc:derby://localhost:1527/sample",
+                "app",// usuario
                 "app"); // senha
         return conn;
     }
@@ -41,7 +41,7 @@ public class Agenda {
         Statement stmt = null;
         Connection conn = null;
 
-        String sql = "SELECT ID_PESSOA, NM_PESSOA, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL FROM TB_PESSOA";
+        String sql = "SELECT ID_CONTATO, NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL FROM TB_CONTATO";
         try {
             conn = obterConexao();
             stmt = conn.createStatement();
@@ -50,8 +50,8 @@ public class Agenda {
             DateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
 
             while (resultados.next()) {
-                Long id = resultados.getLong("ID_PESSOA");
-                String nome = resultados.getString("NM_PESSOA");
+                Long id = resultados.getLong("ID_CONTATO");
+                String nome = resultados.getString("NM_CONTATO");
                 Date dataNasc = resultados.getDate("DT_NASCIMENTO");
                 String email = resultados.getString("VL_EMAIL");
                 String telefone = resultados.getString("VL_TELEFONE");
@@ -79,13 +79,21 @@ public class Agenda {
             }
         }
     }
-    
-    public static void cadastrarPessoa() throws SQLException, ClassNotFoundException{
+
+    public static void cadastrarPessoa() throws SQLException, ClassNotFoundException {
         PreparedStatement stmt = null;
         Connection conn = null;
-        
+
         String sql = "";
-}
+    }
+
+    public static void removerPessoa() {
+
+    }
+
+    public static void alterarPessoa() {
+
+    }
 
     public static void main(String[] args) {
 
@@ -99,18 +107,15 @@ public class Agenda {
             System.out.println("4-) Excluir");
             System.out.println("0-) Sair");
             entrada = input.nextInt();
-            
+
             switch (entrada) {
-            case 1:
+                case 1:
 
-            case 2:
-                listarPessoas();
-        }
-            
+                case 2:
+                    listarPessoas();
+            }
+
         } while (entrada != 0);
-        
-
-        
 
     }
 
