@@ -119,16 +119,15 @@ public class Agenda {
 
     public static void alterarNome(int id, String nome) throws SQLException, ClassNotFoundException {
         //antes tava ID_PESSOA, agr mudei pra certo. mudei nos outros alterar tbm.
-
+        
         try {
-            PreparedStatement stmt = null;
+            PreparedStatement stmt;
             Connection conn = obterConexao();
-
-            String sql = "UPDATE TB_CONTATO SET DESCRICAO = ? WHERE ID_CONTATO = ?";
+            String sql = "UPDATE TB_CONTATO SET NM_CONTATO = ? WHERE ID_CONTATO = ?";
 
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, nome);
-            stmt.setDouble(2, id);
+            stmt.setInt(2, id);
             stmt.execute();
             stmt.close();
         } catch (SQLException sqlE) {
@@ -242,6 +241,7 @@ public class Agenda {
                         case 1:
                             System.out.println("Digite o novo nome: ");
                             String novoNome = input.nextLine();
+                            novoNome = input.nextLine();
                              {
                                 try {
                                     alterarNome(id, novoNome);
@@ -253,6 +253,7 @@ public class Agenda {
                         case 2:
                             System.out.println("Digite a nova data: ");
                             String novaData = input.nextLine();
+                            novaData = input.nextLine();
                              {
                                 try {
                                     alterarData(id, novaData);
@@ -264,6 +265,7 @@ public class Agenda {
                         case 3:
                             System.out.println("Digite o novo telefone: ");
                             String novoTel = input.nextLine();
+                            novoTel = input.nextLine();
                              {
                                 try {
                                     alterarTelefone(id, novoTel);
@@ -275,6 +277,7 @@ public class Agenda {
                         case 4:
                             System.out.println("Digite o novo Email: ");
                             String novoEmail = input.nextLine();
+                            novoEmail = input.nextLine();
                              {
                                 try {
                                     alterarEmail(id, novoEmail);
