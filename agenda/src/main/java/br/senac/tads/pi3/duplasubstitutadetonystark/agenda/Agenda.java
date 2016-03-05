@@ -94,13 +94,14 @@ public class Agenda {
         PreparedStatement stmt = null;
         Connection conn = obterConexao();
 
-        String sql = "INSERT INTO TB_CONTATO (NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL, DT_CADASTRO)VALUES (?,?,?,?,CURRENT_TIMESTAMP)";
+        String sql = "INSERT INTO TB_CONTATO (NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL, DT_CADASTRO)VALUES (?,?,?,?,?)";
         stmt = conn.prepareStatement(sql);
 
         stmt.setString(1, nome);
         stmt.setDate(2, data);
         stmt.setString(3, telefone);
         stmt.setString(4, email);
+        stmt.setDate(5, new java.sql.Date(System.currentTimeMillis()));
         stmt.execute();
         stmt.close();
         System.out.println("Sucesso!");
